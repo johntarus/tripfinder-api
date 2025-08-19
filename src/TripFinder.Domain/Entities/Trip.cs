@@ -1,10 +1,12 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using TripFinder.Domain.Enums;
 
 namespace TripFinder.Domain.Entities;
 
 public class Trip
 {
-    public Guid Id { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.None)] 
+    public int Id { get; set; } 
     public DateTime RequestDate { get; set; }
     public TripStatus Status { get; set; }
     public decimal Rating { get; set; }
@@ -16,9 +18,10 @@ public class Trip
     public decimal Distance { get; set; } 
     public int Duration { get; set; } 
     
-    public Guid DriverId { get; set; }
+    // Foreign Keys
+    public int DriverId { get; set; }
     public Driver Driver { get; set; } = null!;
-    
-    public Guid CarId { get; set; }
+
+    public int CarId { get; set; }
     public Car Car { get; set; } = null!;
 }

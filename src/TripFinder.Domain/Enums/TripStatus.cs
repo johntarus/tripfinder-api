@@ -2,7 +2,8 @@ namespace TripFinder.Domain.Enums;
 
 public enum TripStatus
 {
-    Completed,
-    Cancelled,
-    InProgress
+    Completed = 0,
+    Cancelled = 1,
+    InProgress = 2,
+    Requested = 3
 }

@@ -16,12 +16,15 @@ builder.Services
 
 var app = builder.Build();
 
-var usedMemory = GC.GetTotalMemory(false);
-Console.WriteLine(usedMemory);
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<ApplicationDbContext>();
 
-using var scope = app.Services.CreateScope();
-var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-context.Database.Migrate(); 
+    await context.Database.MigrateAsync();
+    await SeedData.SeedAsync(context);
+}
+
 
 if (app.Environment.IsDevelopment())
 {
