@@ -1,0 +1,44 @@
+﻿services:
+  tripfinder.api:
+    image: tripfinder.api
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: src/TripFinder.API/Dockerfile
+    env_file:
+      - .env
+    depends_on:
+      - sqlserver
+    ports:
+      - "5001:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Initial Catalog=TripFinder;Persist Security Info=False;User ID=sa;Password=Passw0rd123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=true;Connection Timeout=30;  
+  #      - ConnectionStrings__DefaultConnection=${ConnectionStrings__DefaultConnection}
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    #    image: mcr.microsoft.com/azure-sql-edge:latest
+    platform: linux/amd64
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Passw0rd123
+      - MSSQL_PID=Developer
+    volumes:
+      - sqlserverdata:/var/opt/mssql
+    #      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: [ "CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "Passw0rd123", "-Q", "SELECT 1" ]
+      start_period: 60s  # Extra time for ARM initialization
+
+volumes:
+  sqlserverdata:
+  
+  #TODO
+  ## Remove modelstate checks on the controllers since we are already using the ApiController attribute
+  ## and also the order of operations is wrong
+  ## Remove the secrets settings in the readme file since we already have seeded users for testing
+  
+ 

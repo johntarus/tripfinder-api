@@ -1,0 +1,63 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TripFinder.Core", "src\TripFinder.Core\TripFinder.Core.csproj", "{1D402911-346D-49F1-9AB0-92D64E139655}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TripFinder.Domain", "src\TripFinder.Domain\TripFinder.Domain.csproj", "{21111353-DC65-485D-85FF-0F6F864955DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TripFinder.Infrastructure", "src\TripFinder.Infrastructure\TripFinder.Infrastructure.csproj", "{317DF773-823A-48B1-AD82-E04F9A46C92E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TripFinder.API", "src\TripFinder.API\TripFinder.API.csproj", "{E18AC39B-2950-4E75-BE8C-A4AE250593DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TripFinder.API.Tests", "tests\TripFinder.API.Tests\TripFinder.API.Tests.csproj", "{AD34A9D9-9561-4300-ACB2-4F63A9C1E906}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TripFinder.Core.Tests", "tests\TripFinder.Core.Tests\TripFinder.Core.Tests.csproj", "{0D3C4FD6-2750-4F3C-86C4-C9D8F59FA9FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TripFinder.Infrastructure.Tests", "tests\TripFinder.Infrastructure.Tests\TripFinder.Infrastructure.Tests.csproj", "{B9C7B1A0-5E8D-498D-A07D-384581E9BC46}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9AD49093-4F42-4AF5-962F-B29560480D11}"
+	ProjectSection(SolutionItems) = preProject
+		compose.yaml = compose.yaml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1D402911-346D-49F1-9AB0-92D64E139655}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D402911-346D-49F1-9AB0-92D64E139655}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D402911-346D-49F1-9AB0-92D64E139655}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D402911-346D-49F1-9AB0-92D64E139655}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21111353-DC65-485D-85FF-0F6F864955DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21111353-DC65-485D-85FF-0F6F864955DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21111353-DC65-485D-85FF-0F6F864955DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21111353-DC65-485D-85FF-0F6F864955DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{317DF773-823A-48B1-AD82-E04F9A46C92E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{317DF773-823A-48B1-AD82-E04F9A46C92E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{317DF773-823A-48B1-AD82-E04F9A46C92E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{317DF773-823A-48B1-AD82-E04F9A46C92E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E18AC39B-2950-4E75-BE8C-A4AE250593DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E18AC39B-2950-4E75-BE8C-A4AE250593DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E18AC39B-2950-4E75-BE8C-A4AE250593DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E18AC39B-2950-4E75-BE8C-A4AE250593DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD34A9D9-9561-4300-ACB2-4F63A9C1E906}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD34A9D9-9561-4300-ACB2-4F63A9C1E906}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD34A9D9-9561-4300-ACB2-4F63A9C1E906}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD34A9D9-9561-4300-ACB2-4F63A9C1E906}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D3C4FD6-2750-4F3C-86C4-C9D8F59FA9FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D3C4FD6-2750-4F3C-86C4-C9D8F59FA9FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D3C4FD6-2750-4F3C-86C4-C9D8F59FA9FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D3C4FD6-2750-4F3C-86C4-C9D8F59FA9FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9C7B1A0-5E8D-498D-A07D-384581E9BC46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9C7B1A0-5E8D-498D-A07D-384581E9BC46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9C7B1A0-5E8D-498D-A07D-384581E9BC46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9C7B1A0-5E8D-498D-A07D-384581E9BC46}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
