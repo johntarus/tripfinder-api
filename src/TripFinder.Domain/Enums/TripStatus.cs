@@ -1,9 +1,15 @@
-namespace TripFinder.Domain.Enums;
+// Domain/Enums.cs
+namespace RideApp.Domain;
 
 public enum TripStatus
 {
-    Completed = 0,
-    Cancelled = 1,
-    InProgress = 2,
-    Requested = 3
+    Completed,
+    Canceled
+}
+
+public enum TripType
+{
+    Basic,
+    Lady,
+    HavaXL
 }

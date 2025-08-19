@@ -11,8 +11,8 @@ using TripFinder.Infrastructure.Data;
 
 namespace TripFinder.Infrastructure.Data.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250819163131_Initial")]
+    [DbContext(typeof(AppDbContext))]
+    [Migration("20250819205243_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace TripFinder.Infrastructure.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("TripFinder.Domain.Entities.Car", b =>
+            modelBuilder.Entity("Car", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -33,40 +33,35 @@ namespace TripFinder.Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("LicensePlate")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                    b.Property<int>("DriverId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Make")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Model")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Photo")
+                    b.Property<string>("Number")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PictureUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Year")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DriverId");
+
                     b.ToTable("Cars");
                 });
 
-            modelBuilder.Entity("TripFinder.Domain.Entities.Driver", b =>
+            modelBuilder.Entity("Trip", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -74,67 +69,54 @@ namespace TripFinder.Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("ProfilePicture")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<decimal>("Rating")
-                        .HasColumnType("decimal(3,2)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Drivers");
-                });
-
-            modelBuilder.Entity("TripFinder.Domain.Entities.Trip", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
                     b.Property<int>("CarId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("CostKes")
+                        .HasColumnType("int");
 
-                    b.Property<decimal>("Distance")
+                    b.Property<decimal>("DistanceKm")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("DriverId")
                         .HasColumnType("int");
 
-                    b.Property<string>("DropoffLocation")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<DateTime>("DropoffTime")
+                    b.Property<DateTime?>("DropoffDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Duration")
+                    b.Property<double>("DropoffLat")
+                        .HasColumnType("float");
+
+                    b.Property<double>("DropoffLng")
+                        .HasColumnType("float");
+
+                    b.Property<string>("DropoffLocation")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DurationMinutes")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("PickupDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("PickupLat")
+                        .HasColumnType("float");
+
+                    b.Property<double>("PickupLng")
+                        .HasColumnType("float");
 
                     b.Property<string>("PickupLocation")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<DateTime>("PickupTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("Rating")
-                        .HasColumnType("decimal(3,2)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("RequestDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Type")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -143,20 +125,49 @@ namespace TripFinder.Infrastructure.Data.Migrations
 
                     b.HasIndex("DriverId");
 
-                    b.HasIndex("DropoffLocation");
-
-                    b.HasIndex("PickupLocation");
-
-                    b.HasIndex("RequestDate");
-
-                    b.HasIndex("Status");
-
                     b.ToTable("Trips");
                 });
 
-            modelBuilder.Entity("TripFinder.Domain.Entities.Trip", b =>
+            modelBuilder.Entity("TripFinder.Domain.Entities.Driver", b =>
                 {
-                    b.HasOne("TripFinder.Domain.Entities.Car", "Car")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ExternalId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PictureUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Rating")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Drivers");
+                });
+
+            modelBuilder.Entity("Car", b =>
+                {
+                    b.HasOne("TripFinder.Domain.Entities.Driver", "Driver")
+                        .WithMany("Cars")
+                        .HasForeignKey("DriverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Driver");
+                });
+
+            modelBuilder.Entity("Trip", b =>
+                {
+                    b.HasOne("Car", "Car")
                         .WithMany("Trips")
                         .HasForeignKey("CarId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -165,7 +176,7 @@ namespace TripFinder.Infrastructure.Data.Migrations
                     b.HasOne("TripFinder.Domain.Entities.Driver", "Driver")
                         .WithMany("Trips")
                         .HasForeignKey("DriverId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Car");
@@ -173,13 +184,15 @@ namespace TripFinder.Infrastructure.Data.Migrations
                     b.Navigation("Driver");
                 });
 
-            modelBuilder.Entity("TripFinder.Domain.Entities.Car", b =>
+            modelBuilder.Entity("Car", b =>
                 {
                     b.Navigation("Trips");
                 });
 
             modelBuilder.Entity("TripFinder.Domain.Entities.Driver", b =>
                 {
+                    b.Navigation("Cars");
+
                     b.Navigation("Trips");
                 });
 #pragma warning restore 612, 618

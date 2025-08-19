@@ -1,24 +1,17 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace TripFinder.Domain.Entities;
+using RideApp.Domain;
+using TripFinder.Domain.Entities;
 
 public class Car
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)] 
-    public int Id { get; set; }
-    public string LicensePlate { get; set; } = string.Empty;
-    
-    public string Make { get; set; } = string.Empty;
-    
-    public string Model { get; set; } = string.Empty;
-
+    public int Id { get; set; }  // PK
+    public string Number { get; set; } = null!; // unique
+    public string Make { get; set; } = null!;
+    public string Model { get; set; } = null!;
     public int Year { get; set; }
-    
-    public string Color { get; set; } = string.Empty;
+    public string? PictureUrl { get; set; }
 
-    public string Photo { get; set; } = string.Empty;
+    public int DriverId { get; set; }
+    public Driver Driver { get; set; } = null!;
 
-    public List<Trip> Trips { get; set; } = new();
+    public ICollection<Trip> Trips { get; set; } = new List<Trip>();
 }

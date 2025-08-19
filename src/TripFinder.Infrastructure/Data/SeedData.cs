@@ -1,124 +1,157 @@
+// Infrastructure/DatabaseSeeder.cs
+
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
+using RideApp.Domain;
 using TripFinder.Domain.Entities;
-using TripFinder.Domain.Enums;
 
 namespace TripFinder.Infrastructure.Data;
 
-public static class SeedData
+public static class DatabaseSeeder
 {
-    public static async Task SeedAsync(ApplicationDbContext context)
+    private static readonly HttpClient Http = new();
+
+    public static async Task SeedAsync(AppDbContext db, CancellationToken ct = default)
     {
-        if (context.Trips.Any())
-            return; // Already seeded
-
-        var httpClient = new HttpClient();
-        var json = await httpClient.GetStringAsync("https://rapidtechinsights.github.io/hr-assignment/recent.json");
-
+        // Fetch JSON
+        var json = await Http.GetStringAsync("https://rapidtechinsights.github.io/hr-assignment/recent.json", ct);
         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-        var root = JsonSerializer.Deserialize<TripsRootDto>(json, options);
+        var root = JsonSerializer.Deserialize<Root>(json, options)
+                   ?? throw new InvalidOperationException("Failed to parse trips JSON.");
 
-        if (root?.Trips == null || !root.Trips.Any())
-            return;
+        // --- 1. Save unique drivers ---
+        var existingDrivers = await db.Drivers.ToListAsync(ct);
+        var driverMap = existingDrivers.ToDictionary(d => d.ExternalId);
 
-        var drivers = new Dictionary<int, Driver>();
-        var cars = new Dictionary<string, Car>();
-        var trips = new List<Trip>();
+        foreach (var t in root.Trips.Select(x => new { x.driver_id, x.driver_name, x.driver_rating, x.driver_pic }).DistinctBy(d => d.driver_id))
+        {
+            if (!driverMap.ContainsKey(t.driver_id))
+            {
+                var driver = new Driver
+                {
+                    ExternalId = t.driver_id,
+                    Name = t.driver_name,
+                    Rating = t.driver_rating,
+                    PictureUrl = t.driver_pic
+                };
+                db.Drivers.Add(driver);
+                driverMap[t.driver_id] = driver;
+            }
+        }
+
+        await db.SaveChangesAsync(ct);
+
+        // --- 2. Save unique cars ---
+        var existingCars = await db.Cars.ToListAsync(ct);
+        var carMap = existingCars.ToDictionary(c => c.Number, StringComparer.OrdinalIgnoreCase);
+
+        foreach (var t in root.Trips.Select(x => new { x.car_number, x.car_make, x.car_model, x.car_year, x.car_pic, x.driver_id }).DistinctBy(c => c.car_number))
+        {
+            if (!carMap.ContainsKey(t.car_number))
+            {
+                var car = new Car
+                {
+                    Number = t.car_number,
+                    Make = t.car_make,
+                    Model = t.car_model,
+                    Year = t.car_year,
+                    PictureUrl = t.car_pic,
+                    Driver = driverMap[t.driver_id]
+                };
+                db.Cars.Add(car);
+                carMap[t.car_number] = car;
+            }
+        }
+
+        await db.SaveChangesAsync(ct);
+
+        // --- 3. Save unique trips ---
+        var existingTrips = await db.Trips
+            .Select(tr => new { tr.RequestDate, tr.PickupLocation, tr.DropoffLocation })
+            .ToListAsync(ct);
+
+        var tripSet = new HashSet<(DateTime, string, string)>(
+            existingTrips.Select(t => (t.RequestDate, t.PickupLocation, t.DropoffLocation))
+        );
 
         foreach (var t in root.Trips)
         {
-            // Handle driver (use JSON ID)
-            if (!drivers.ContainsKey(t.DriverId))
+            var key = (ParseUtc(t.request_date), t.pickup_location, t.dropoff_location);
+
+            if (!tripSet.Contains(key))
             {
-                drivers[t.DriverId] = new Driver
+                var trip = new Trip
                 {
-                    Id = t.DriverId,
-                    Name = t.DriverName,
-                    Rating = t.DriverRating,
-                    ProfilePicture = t.DriverPic
+                    Status = ToStatus(t.status),
+                    Type = ToType(t.type),
+                    RequestDate = ParseUtc(t.request_date),
+                    PickupDate = ParseUtc(t.pickup_date),
+                    DropoffDate = string.IsNullOrWhiteSpace(t.dropoff_date) ? null : ParseUtc(t.dropoff_date),
+                    PickupLat = t.pickup_lat,
+                    PickupLng = t.pickup_lng,
+                    PickupLocation = t.pickup_location,
+                    DropoffLat = t.dropoff_lat,
+                    DropoffLng = t.dropoff_lng,
+                    DropoffLocation = t.dropoff_location,
+                    DurationMinutes = t.duration,
+                    DistanceKm = Math.Round((decimal)t.distance, 2),
+                    CostKes = t.cost,
+                    Driver = driverMap[t.driver_id],
+                    Car = carMap[t.car_number]
                 };
+
+                db.Trips.Add(trip);
+                tripSet.Add(key);
             }
-
-            // Handle car (database-generated ID)
-            if (!cars.ContainsKey(t.CarNumber))
-            {
-                cars[t.CarNumber] = new Car
-                {
-                    Make = t.CarMake,
-                    Model = t.CarModel,
-                    Year = t.CarYear,
-                    LicensePlate = t.CarNumber,
-                    Photo = t.CarPic
-                };
-            }
-
-            // Trip (use JSON ID)
-            var trip = new Trip
-            {
-                Id = t.Id,
-                RequestDate = t.RequestDate,
-                PickupLocation = t.PickupLocation,
-                DropoffLocation = t.DropoffLocation,
-                PickupTime = t.PickupDate,
-                DropoffTime = t.DropoffDate,
-                Status = Enum.TryParse<TripStatus>(t.Status, true, out var status) ? status : TripStatus.Completed,
-                Duration = t.Duration,
-                Distance = (decimal)t.Distance,
-                Cost = (decimal)t.Cost,
-                Driver = drivers[t.DriverId],
-                Car = cars[t.CarNumber]
-            };
-
-            trips.Add(trip);
         }
 
-        // Save Drivers first (IDs from JSON)
-        context.Drivers.AddRange(drivers.Values);
-        await context.SaveChangesAsync();
-
-        // Save Cars (IDs auto-generated)
-        context.Cars.AddRange(cars.Values);
-        await context.SaveChangesAsync();
-
-        // Save Trips (IDs from JSON, with foreign keys)
-        context.Trips.AddRange(trips);
-        await context.SaveChangesAsync();
+        await db.SaveChangesAsync(ct);
     }
 
-    // Root object for JSON
-    private class TripsRootDto
+    private static TripStatus ToStatus(string s) =>
+        s.Equals("COMPLETED", StringComparison.OrdinalIgnoreCase) ? TripStatus.Completed : TripStatus.Canceled;
+
+    private static TripType ToType(string s) => s.ToUpperInvariant() switch
     {
-        public List<TripJsonDto> Trips { get; set; } = new();
+        "BASIC" => TripType.Basic,
+        "LADY" => TripType.Lady,
+        "HAVAXL" => TripType.HavaXL,
+        _ => TripType.Basic
+    };
+
+    private static DateTime ParseUtc(string s)
+    {
+        var dt = DateTime.ParseExact(s, "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+        return DateTime.SpecifyKind(dt, DateTimeKind.Utc);
     }
 
-    // DTO to map JSON trip
-    private class TripJsonDto
+    private sealed class Root { public List<TripRow> Trips { get; set; } = new(); }
+
+    private sealed class TripRow
     {
-        public int Id { get; set; }
-        public string Status { get; set; } = string.Empty;
-        public DateTime RequestDate { get; set; }
-        public double PickupLat { get; set; }
-        public double PickupLng { get; set; }
-        public string PickupLocation { get; set; } = string.Empty;
-        public double DropoffLat { get; set; }
-        public double DropoffLng { get; set; }
-        public string DropoffLocation { get; set; } = string.Empty;
-        public DateTime PickupDate { get; set; }
-        public DateTime DropoffDate { get; set; }
-        public string Type { get; set; } = string.Empty;
-        public int DriverId { get; set; }
-        public string DriverName { get; set; } = string.Empty;
-        public decimal DriverRating { get; set; }
-        public string DriverPic { get; set; } = string.Empty;
-        public string CarMake { get; set; } = string.Empty;
-        public string CarModel { get; set; } = string.Empty;
-        public string CarNumber { get; set; } = string.Empty;
-        public int CarYear { get; set; }
-        public string CarPic { get; set; } = string.Empty;
-        public int Duration { get; set; }
-        public string DurationUnit { get; set; } = string.Empty;
-        public double Distance { get; set; }
-        public string DistanceUnit { get; set; } = string.Empty;
-        public double Cost { get; set; }
-        public string CostUnit { get; set; } = string.Empty;
+        public int driver_id { get; set; }
+        public string driver_name { get; set; } = null!;
+        public double driver_rating { get; set; }
+        public string? driver_pic { get; set; }
+        public string car_make { get; set; } = null!;
+        public string car_model { get; set; } = null!;
+        public string car_number { get; set; } = null!;
+        public int car_year { get; set; }
+        public string? car_pic { get; set; }
+        public int id { get; set; }
+        public string status { get; set; } = null!;
+        public string request_date { get; set; } = null!;
+        public double pickup_lat { get; set; }
+        public double pickup_lng { get; set; }
+        public string pickup_location { get; set; } = null!;
+        public double dropoff_lat { get; set; }
+        public double dropoff_lng { get; set; }
+        public string dropoff_location { get; set; } = null!;
+        public string pickup_date { get; set; } = null!;
+        public string? dropoff_date { get; set; }
+        public string type { get; set; } = null!;
+        public int duration { get; set; }
+        public double distance { get; set; }
+        public int cost { get; set; }
     }
 }
