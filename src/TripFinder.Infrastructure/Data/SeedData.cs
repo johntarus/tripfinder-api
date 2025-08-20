@@ -82,6 +82,7 @@ public static class DatabaseSeeder
             {
                 var trip = new Trip
                 {
+                    ExternalId = t.id, 
                     Status = ToStatus(t.status),
                     Type = ToType(t.type),
                     RequestDate = ParseUtc(t.request_date),

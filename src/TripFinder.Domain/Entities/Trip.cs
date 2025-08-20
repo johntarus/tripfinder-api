@@ -1,9 +1,13 @@
 using RideApp.Domain;
-using TripFinder.Domain.Entities;
+
+namespace TripFinder.Domain.Entities;
 
 public class Trip
 {
-    public int Id { get; set; } // PK
+    public int Id { get; set; } // EF Core PK
+
+    public int ExternalId { get; set; }  
+
     public TripStatus Status { get; set; }
     public TripType Type { get; set; }
 

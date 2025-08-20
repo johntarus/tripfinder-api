@@ -58,7 +58,33 @@ namespace TripFinder.Infrastructure.Data.Migrations
                     b.ToTable("Cars");
                 });
 
-            modelBuilder.Entity("Trip", b =>
+            modelBuilder.Entity("TripFinder.Domain.Entities.Driver", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ExternalId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PictureUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Rating")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Drivers");
+                });
+
+            modelBuilder.Entity("TripFinder.Domain.Entities.Trip", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -94,6 +120,9 @@ namespace TripFinder.Infrastructure.Data.Migrations
                     b.Property<int>("DurationMinutes")
                         .HasColumnType("int");
 
+                    b.Property<int>("ExternalId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("PickupDate")
                         .HasColumnType("datetime2");
 
@@ -125,32 +154,6 @@ namespace TripFinder.Infrastructure.Data.Migrations
                     b.ToTable("Trips");
                 });
 
-            modelBuilder.Entity("TripFinder.Domain.Entities.Driver", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ExternalId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PictureUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Rating")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Drivers");
-                });
-
             modelBuilder.Entity("Car", b =>
                 {
                     b.HasOne("TripFinder.Domain.Entities.Driver", "Driver")
@@ -162,7 +165,7 @@ namespace TripFinder.Infrastructure.Data.Migrations
                     b.Navigation("Driver");
                 });
 
-            modelBuilder.Entity("Trip", b =>
+            modelBuilder.Entity("TripFinder.Domain.Entities.Trip", b =>
                 {
                     b.HasOne("Car", "Car")
                         .WithMany("Trips")
