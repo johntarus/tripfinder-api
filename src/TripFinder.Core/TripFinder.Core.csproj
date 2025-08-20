@@ -10,8 +10,4 @@
       <ProjectReference Include="..\TripFinder.Domain\TripFinder.Domain.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Common\Helpers\" />
-    </ItemGroup>
-
 </Project>
