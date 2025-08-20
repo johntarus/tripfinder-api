@@ -7,4 +7,5 @@ public interface ITripService
     Task<List<TripsOverTimeDto>> GetTripsOverTimeAsync(CancellationToken ct);
     Task<IEnumerable<TripDto>> GetLatestTripsAsync(int count = 5);
     Task<List<DestinationCountDto>> GetTopDestinationsAsync(int top = 3);
+    Task<PaginatedResponse<TripDto>> SearchTripsAsync(SearchTripsRequestDto request, CancellationToken cancellationToken = default);
 }
