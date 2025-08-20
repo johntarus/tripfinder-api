@@ -36,6 +36,20 @@ public class TripsController(ITripService service, ILogger<TripsController> _log
         return Ok(result);
     }
     
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<TripDto>> GetTripById(int id, CancellationToken ct)
+    {
+        var trip = await service.GetTripByIdAsync(id, ct);
+
+        if (trip == null)
+        {
+            _logger.LogWarning("Trip with ID {TripId} not found", id);
+            return NotFound(new { Message = $"Trip with ID {id} not found" });
+        }
+
+        return Ok(trip);
+    }
+    
     [HttpGet("search")]
     [ProducesResponseType(typeof(ApiResponse<PaginatedResponse<TripDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]

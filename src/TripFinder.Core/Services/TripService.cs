@@ -7,14 +7,14 @@ using TripFinder.Domain.Entities;
 
 namespace TripFinder.Core.Services;
 
-public class TripService(ITripRepository repo, ILogger<TripService> logger) : ITripService
+public class TripService(ITripRepository repo, ILogger<TripService> _logger) : ITripService
 {
     /// <summary>
     /// Retrieves the number of trips over time, grouped by month.
     /// </summary>
     public async Task<List<TripsOverTimeDto>> GetTripsOverTimeAsync(CancellationToken ct)
     {
-        logger.LogInformation("Retrieving trips over time");
+        _logger.LogInformation("Retrieving trips over time");
         var trips = await repo.GetTripsAsync(ct);
         return TimeSeriesHelper.GenerateMonthlyTimeSeries(trips);
     }
@@ -24,7 +24,7 @@ public class TripService(ITripRepository repo, ILogger<TripService> logger) : IT
     /// </summary>
     public async Task<IEnumerable<TripDto>> GetLatestTripsAsync(int count = 5)
     {
-        logger.LogInformation("Retrieving {Count} latest trips", count);
+        _logger.LogInformation("Retrieving {Count} latest trips", count);
         count = count <= 0 ? 5 : count;
 
         var trips = await repo.GetLatestTripsAsync(count);
@@ -36,7 +36,7 @@ public class TripService(ITripRepository repo, ILogger<TripService> logger) : IT
     /// </summary>
     public async Task<List<DestinationCountDto>> GetTopDestinationsAsync(int top = 3)
     {
-        logger.LogInformation("Retrieving top {Top} destinations", top);
+        _logger.LogInformation("Retrieving top {Top} destinations", top);
         top = top <= 0 ? 3 : top;
         return await repo.GetTopDestinationsAsync(top);
     }
@@ -49,12 +49,12 @@ public class TripService(ITripRepository repo, ILogger<TripService> logger) : IT
     {
         try
         {
-            logger.LogInformation("Searching trips with parameters: {@Request}", request);
+            _logger.LogInformation("Searching trips with parameters: {@Request}", request);
 
             // Validate request
             if (request == null)
             {
-                logger.LogWarning("Search request is null");
+                _logger.LogWarning("Search request is null");
                 throw new ArgumentNullException(nameof(request));
             }
 
@@ -78,13 +78,36 @@ public class TripService(ITripRepository repo, ILogger<TripService> logger) : IT
         }
         catch (ArgumentException ex)
         {
-            logger.LogWarning(ex, "Invalid search parameters: {@Request}", request);
+            _logger.LogWarning(ex, "Invalid search parameters: {@Request}", request);
             throw;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error searching trips with parameters: {@Request}", request);
+            _logger.LogError(ex, "Error searching trips with parameters: {@Request}", request);
             throw new ApplicationException("An error occurred while searching trips", ex);
+        }
+    }
+
+    public async Task<TripDto?> GetTripByIdAsync(int id, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            _logger.LogInformation("Fetching trip details for ID {TripId}", id);
+
+            var trip = await repo.GetTripByIdAsync(id, cancellationToken);
+
+            if (trip == null)
+            {
+                _logger.LogWarning("Trip with ID {TripId} not found", id);
+                return null;
+            }
+
+            return MapToDto(trip);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving trip details for ID {TripId}", id);
+            throw new ApplicationException($"An error occurred while retrieving trip {id}", ex);
         }
     }
 

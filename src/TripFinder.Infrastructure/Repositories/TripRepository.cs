@@ -104,4 +104,13 @@ public class TripRepository(AppDbContext dbContext) : ITripRepository
             Items = items
         };
     }
+
+    public async Task<Trip?> GetTripByIdAsync(int id, CancellationToken ct)
+    {
+        return await dbContext.Trips
+            .Include(t => t.Driver)
+            .Include(t => t.Car)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(t => t.Id == id, ct);
+    }
 }
