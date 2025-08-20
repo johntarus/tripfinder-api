@@ -1,5 +1,3 @@
-// Infrastructure/DatabaseSeeder.cs
-
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using RideApp.Domain;

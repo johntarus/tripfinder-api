@@ -16,6 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\TripFinder.Core\TripFinder.Core.csproj" />
       <ProjectReference Include="..\TripFinder.Domain\TripFinder.Domain.csproj" />
     </ItemGroup>
 
