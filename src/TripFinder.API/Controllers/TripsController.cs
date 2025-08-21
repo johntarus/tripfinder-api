@@ -74,6 +74,11 @@ public class TripsController(ITripService service, ILogger<TripsController> _log
                 });
             }
 
+            if (!Enum.IsDefined(typeof(TripStatusFilter), request.StatusFilter))
+            {
+                request.StatusFilter = TripStatusFilter.All;
+            }
+
             var result = await service.SearchTripsAsync(request, cancellationToken);
 
             return Ok(new ApiResponse<PaginatedResponse<TripDto>>
@@ -93,4 +98,5 @@ public class TripsController(ITripService service, ILogger<TripsController> _log
             });
         }
     }
+
 }

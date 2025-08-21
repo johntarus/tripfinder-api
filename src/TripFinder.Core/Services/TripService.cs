@@ -9,9 +9,6 @@ namespace TripFinder.Core.Services;
 
 public class TripService(ITripRepository repo, ILogger<TripService> _logger) : ITripService
 {
-    /// <summary>
-    /// Retrieves the number of trips over time, grouped by month.
-    /// </summary>
     public async Task<List<TripsOverTimeDto>> GetTripsOverTimeAsync(CancellationToken ct)
     {
         _logger.LogInformation("Retrieving trips over time");
@@ -19,9 +16,6 @@ public class TripService(ITripRepository repo, ILogger<TripService> _logger) : I
         return TimeSeriesHelper.GenerateMonthlyTimeSeries(trips);
     }
 
-    /// <summary>
-    /// Retrieves the latest trips as DTOs.
-    /// </summary>
     public async Task<IEnumerable<TripDto>> GetLatestTripsAsync(int count = 5)
     {
         _logger.LogInformation("Retrieving {Count} latest trips", count);
@@ -31,9 +25,6 @@ public class TripService(ITripRepository repo, ILogger<TripService> _logger) : I
         return trips.Select(MapToDto);
     }
 
-    /// <summary>
-    /// Retrieves the top destinations by trip count.
-    /// </summary>
     public async Task<List<DestinationCountDto>> GetTopDestinationsAsync(int top = 3)
     {
         _logger.LogInformation("Retrieving top {Top} destinations", top);
@@ -41,9 +32,7 @@ public class TripService(ITripRepository repo, ILogger<TripService> _logger) : I
         return await repo.GetTopDestinationsAsync(top);
     }
 
-    /// <summary>
-    /// Searches trips based on the provided request parameters with pagination.
-    /// </summary>
+
     public async Task<PaginatedResponse<TripDto>> SearchTripsAsync(SearchTripsRequestDto request,
         CancellationToken cancellationToken = default)
     {
@@ -51,21 +40,17 @@ public class TripService(ITripRepository repo, ILogger<TripService> _logger) : I
         {
             _logger.LogInformation("Searching trips with parameters: {@Request}", request);
 
-            // Validate request
             if (request == null)
             {
                 _logger.LogWarning("Search request is null");
                 throw new ArgumentNullException(nameof(request));
             }
 
-            // Normalize pagination parameters
             request.Page = request.Page <= 0 ? 1 : request.Page;
             request.PageSize = request.PageSize <= 0 || request.PageSize > 100 ? 10 : request.PageSize;
 
-            // Get data from repository
             var result = await repo.SearchTripsAsync(request, cancellationToken);
 
-            // Map to DTOs
             var tripDtos = result.Items.Select(MapToDto).ToList();
 
             return new PaginatedResponse<TripDto>
@@ -117,12 +102,21 @@ public class TripService(ITripRepository repo, ILogger<TripService> _logger) : I
         {
             Id = trip.Id,
             Pickup = trip.PickupLocation,
+            PickupLat = trip.PickupLat,
+            PickupLng = trip.PickupLng,
             Dropoff = trip.DropoffLocation,
+            DropoffLat = trip.DropoffLat,
+            DropoffLng = trip.DropoffLng,
             Type = trip.Type.ToString() ?? string.Empty,
             DriverName = trip.Driver?.Name ?? string.Empty,
+            DriverRating = trip.Driver?.Rating ?? 0,
+            DriverPicture = trip.Driver?.PictureUrl ?? string.Empty,
+            PickupTime = trip.PickupDate,
+            DropoffTime = trip.DropoffDate,
             CarMake = trip.Car?.Make ?? string.Empty,
             CarModel = trip.Car?.Model ?? string.Empty,
             CarNumber = trip.Car?.Number ?? string.Empty,
+            CarPictureUrl = trip.Car?.PictureUrl ?? string.Empty,
             RequestDate = trip.RequestDate,
             Status = trip.Status.ToString(),
             Distance = trip.DistanceKm,

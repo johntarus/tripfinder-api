@@ -1,4 +1,3 @@
-// Domain/Enums.cs
 namespace RideApp.Domain;
 
 public enum TripStatus

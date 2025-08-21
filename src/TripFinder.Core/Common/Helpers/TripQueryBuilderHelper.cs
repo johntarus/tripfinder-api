@@ -8,13 +8,13 @@ public static class TripQueryBuilderHelper
 {
     public static IQueryable<Trip> ApplyFilters(IQueryable<Trip> query, SearchTripsRequestDto request)
     {
-        // Status filter
-        if (!request.IncludeCancelled)
+        query = request.StatusFilter switch
         {
-            query = query.Where(t => t.Status == TripStatus.Completed);
-        }
+            TripStatusFilter.Completed => query.Where(t => t.Status == TripStatus.Completed),
+            TripStatusFilter.Cancelled => query.Where(t => t.Status == TripStatus.Canceled),
+            TripStatusFilter.All or _ => query // Show all statuses (no filtering)
+        };
 
-        // Keyword search
         if (!string.IsNullOrWhiteSpace(request.Q))
         {
             var searchTerm = request.Q.ToLower().Trim();
@@ -29,7 +29,6 @@ public static class TripQueryBuilderHelper
             );
         }
 
-        // Distance filter
         if (request.Distance.HasValue)
         {
             query = request.Distance.Value switch
@@ -42,7 +41,6 @@ public static class TripQueryBuilderHelper
             };
         }
 
-        // Duration filter
         if (request.Duration.HasValue)
         {
             query = request.Duration.Value switch

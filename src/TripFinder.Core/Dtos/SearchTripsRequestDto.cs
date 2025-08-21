@@ -5,7 +5,9 @@ namespace TripFinder.Core.Dtos;
 public class SearchTripsRequestDto
 {
     public string Q { get; set; } = string.Empty;
-    public bool IncludeCancelled { get; set; } = false;
+    
+    public TripStatusFilter StatusFilter { get; set; } = TripStatusFilter.Completed;
+    
     public DistanceRange? Distance { get; set; }
     public DurationRange? Duration { get; set; }
     
@@ -19,18 +21,25 @@ public class SearchTripsRequestDto
     public bool SortDescending { get; set; } = true;
 }
 
+public enum TripStatusFilter
+{
+    All,    
+    Completed,  
+    Cancelled,  
+}
+
 public enum DurationRange
 {
-    Quick,      // 0-15 min
-    Medium,     // 15-30 min
-    Long,       // 30-60 min
-    VeryLong    // 60+ min
+    Quick,   
+    Medium,  
+    Long, 
+    VeryLong
 }
 
 public enum DistanceRange
 {
-    Short,      // 0-5 km
-    Medium,     // 5-15 km
-    Long,       // 15-30 km
-    VeryLong    // 30+ km
+    Short,   
+    Medium,  
+    Long, 
+    VeryLong 
 }

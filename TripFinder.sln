@@ -11,16 +11,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TripFinder.Infrastructure",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TripFinder.API", "src\TripFinder.API\TripFinder.API.csproj", "{E18AC39B-2950-4E75-BE8C-A4AE250593DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TripFinder.API.Tests", "tests\TripFinder.API.Tests\TripFinder.API.Tests.csproj", "{AD34A9D9-9561-4300-ACB2-4F63A9C1E906}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TripFinder.Core.Tests", "tests\TripFinder.Core.Tests\TripFinder.Core.Tests.csproj", "{0D3C4FD6-2750-4F3C-86C4-C9D8F59FA9FA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TripFinder.Infrastructure.Tests", "tests\TripFinder.Infrastructure.Tests\TripFinder.Infrastructure.Tests.csproj", "{B9C7B1A0-5E8D-498D-A07D-384581E9BC46}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9AD49093-4F42-4AF5-962F-B29560480D11}"
 	ProjectSection(SolutionItems) = preProject
 		compose.yaml = compose.yaml
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TripFinder.Tests", "tests\TripFinder.Tests\TripFinder.Tests.csproj", "{B814FE61-093F-4F0A-BB6A-C36B8652E172}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,17 +43,9 @@ Global
 		{E18AC39B-2950-4E75-BE8C-A4AE250593DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E18AC39B-2950-4E75-BE8C-A4AE250593DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E18AC39B-2950-4E75-BE8C-A4AE250593DA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AD34A9D9-9561-4300-ACB2-4F63A9C1E906}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AD34A9D9-9561-4300-ACB2-4F63A9C1E906}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AD34A9D9-9561-4300-ACB2-4F63A9C1E906}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AD34A9D9-9561-4300-ACB2-4F63A9C1E906}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0D3C4FD6-2750-4F3C-86C4-C9D8F59FA9FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0D3C4FD6-2750-4F3C-86C4-C9D8F59FA9FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0D3C4FD6-2750-4F3C-86C4-C9D8F59FA9FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0D3C4FD6-2750-4F3C-86C4-C9D8F59FA9FA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B9C7B1A0-5E8D-498D-A07D-384581E9BC46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B9C7B1A0-5E8D-498D-A07D-384581E9BC46}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B9C7B1A0-5E8D-498D-A07D-384581E9BC46}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B9C7B1A0-5E8D-498D-A07D-384581E9BC46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B814FE61-093F-4F0A-BB6A-C36B8652E172}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B814FE61-093F-4F0A-BB6A-C36B8652E172}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B814FE61-093F-4F0A-BB6A-C36B8652E172}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B814FE61-093F-4F0A-BB6A-C36B8652E172}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -12,7 +12,7 @@ using TripFinder.Infrastructure.Data;
 namespace TripFinder.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250820074704_Initial")]
+    [Migration("20250821114641_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

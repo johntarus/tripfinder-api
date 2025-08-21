@@ -2,8 +2,8 @@ namespace TripFinder.Domain.Entities;
 
 public class Driver
 {
-    public int Id { get; set; }  // PK, auto identity
-    public int ExternalId { get; set; }  // JSON driver_id
+    public int Id { get; set; } 
+    public int ExternalId { get; set; } 
     public string Name { get; set; } = null!;
     public double Rating { get; set; }
     public string? PictureUrl { get; set; }

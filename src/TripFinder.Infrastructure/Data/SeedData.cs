@@ -11,13 +11,12 @@ public static class DatabaseSeeder
 
     public static async Task SeedAsync(AppDbContext db, CancellationToken ct = default)
     {
-        // Fetch JSON
         var json = await Http.GetStringAsync("https://rapidtechinsights.github.io/hr-assignment/recent.json", ct);
         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         var root = JsonSerializer.Deserialize<Root>(json, options)
                    ?? throw new InvalidOperationException("Failed to parse trips JSON.");
 
-        // --- 1. Save unique drivers ---
+        // ---Save unique drivers ---
         var existingDrivers = await db.Drivers.ToListAsync(ct);
         var driverMap = existingDrivers.ToDictionary(d => d.ExternalId);
 
@@ -39,7 +38,7 @@ public static class DatabaseSeeder
 
         await db.SaveChangesAsync(ct);
 
-        // --- 2. Save unique cars ---
+        // --- Save unique cars ---
         var existingCars = await db.Cars.ToListAsync(ct);
         var carMap = existingCars.ToDictionary(c => c.Number, StringComparer.OrdinalIgnoreCase);
 
@@ -63,7 +62,7 @@ public static class DatabaseSeeder
 
         await db.SaveChangesAsync(ct);
 
-        // --- 3. Save unique trips ---
+        // --- Save unique trips ---
         var existingTrips = await db.Trips
             .Select(tr => new { tr.RequestDate, tr.PickupLocation, tr.DropoffLocation })
             .ToListAsync(ct);

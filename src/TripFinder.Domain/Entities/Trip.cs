@@ -4,7 +4,7 @@ namespace TripFinder.Domain.Entities;
 
 public class Trip
 {
-    public int Id { get; set; } // EF Core PK
+    public int Id { get; set; } 
 
     public int ExternalId { get; set; }  
 

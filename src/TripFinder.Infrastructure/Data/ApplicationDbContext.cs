@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using RideApp.Domain;
 using TripFinder.Domain.Entities;
 
 namespace TripFinder.Infrastructure.Data;
