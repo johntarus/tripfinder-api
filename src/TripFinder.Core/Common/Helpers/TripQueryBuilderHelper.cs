@@ -12,7 +12,7 @@ public static class TripQueryBuilderHelper
         {
             TripStatusFilter.Completed => query.Where(t => t.Status == TripStatus.Completed),
             TripStatusFilter.Cancelled => query.Where(t => t.Status == TripStatus.Canceled),
-            TripStatusFilter.All or _ => query // Show all statuses (no filtering)
+            TripStatusFilter.All or _ => query 
         };
 
         if (!string.IsNullOrWhiteSpace(request.Q))

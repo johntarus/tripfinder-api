@@ -83,7 +83,7 @@ namespace TripFinder.Tests.repositories
             var result = await repo.GetLatestTripsAsync(2);
 
             Assert.Equal(2, result.Count());
-            Assert.Equal(3, result.First().Id); // most recent trip
+            Assert.Equal(3, result.First().Id);
         }
 
         [Fact]

@@ -1,4 +1,4 @@
-using TripFinder.Domain.Entities;
+namespace TripFinder.Domain.Entities;
 
 public class Car
 {
