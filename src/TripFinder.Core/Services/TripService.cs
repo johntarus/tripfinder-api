@@ -112,6 +112,7 @@ public class TripService(ITripRepository repo, ILogger<TripService> _logger) : I
             DriverRating = trip.Driver?.Rating ?? 0,
             DriverPicture = trip.Driver?.PictureUrl ?? string.Empty,
             PickupTime = trip.PickupDate,
+            Year = trip.Car?.Year ?? 0,
             DropoffTime = trip.DropoffDate,
             CarMake = trip.Car?.Make ?? string.Empty,
             CarModel = trip.Car?.Model ?? string.Empty,

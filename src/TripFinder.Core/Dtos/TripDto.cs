@@ -11,6 +11,7 @@ public class TripDto
     public decimal Distance { get; set; }
     public double Duration { get; set; }
     public decimal Fare { get; set; }
+    public int Year { get; set; }
 
     public string DriverName { get; set; } = string.Empty;
     public double DriverRating { get; set; }
